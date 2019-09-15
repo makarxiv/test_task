@@ -15,12 +15,12 @@ Log::Log(const std::string &name_file, bool clear_file, const int &log_mode_inpu
 };
 
 Log::~Log() {
-  AddInLog("finish logging.");
+  AddInLog("finish logging.", 1);
 };
 
-void Log::AddInLog(std::string message)
+void Log::AddInLog(const std::string &message, const int &log_lvl)
 {
-  if (log_mode !=0) {
+  if (log_mode > log_lvl) {
     std::ofstream file(nfile.c_str(), std::ios::app);
     time_t seconds = time(NULL);
     tm *timeinfo = std::localtime(&seconds);

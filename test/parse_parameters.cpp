@@ -7,7 +7,6 @@ std::string CommandLineParameters::ParseCommandLine(const int &argc, char *argv[
   if (argc > 0) {
     int i = 1;
     while (i < argc) {
-      int pos;
       std::string parameter = std::string(argv[i]);
       if ((parameter == "mode")&&((i + 1) < argc)) {
         mode_ = std::string(argv[i+1]);
@@ -18,7 +17,7 @@ std::string CommandLineParameters::ParseCommandLine(const int &argc, char *argv[
         input_file_name_ = std::string(argv[i+1]);
         file_exist_ = std::ifstream(input_file_name_) != NULL;
         if (!file_exist_)
-			error = error + "Incorrect parameter file name (parameter " + input_file_name_ + ").";
+			error = error + "Incorrect parameter file name (parameter " + input_file_name_ + "). ";
         i = i + 2;
         continue;
       }
@@ -37,7 +36,7 @@ std::string CommandLineParameters::ParseCommandLine(const int &argc, char *argv[
         i = i + 2;
 		continue;
       }
-	  error = error + "Unidentified parameter " + parameter + ".";
+	  error = error + "Unidentified parameter " + parameter + ". ";
       i = i + 1;
 
     }

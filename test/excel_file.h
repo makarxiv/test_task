@@ -9,9 +9,7 @@ public:
   std::vector<std::string> strings_value_;
   ExcelFile() {};
   virtual ~ExcelFile() {};
-  virtual int Parse() {
-    return 0;
-  }
+  virtual void Parse() {};
 };
 
 #endif

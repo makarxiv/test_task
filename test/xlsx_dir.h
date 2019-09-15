@@ -10,14 +10,14 @@ class XlsxDir : public ExcelFile {
   std::vector<XlsxSheet> sheets_;
   std::string directory_name_;
   XlsxDir(std::string &input_name);
-  int Parse();
+  void Parse();
 protected:
   void FindTag(const std::string &tag, const std::string &current_string,
              int &currentpos);
   int FillTagValue(const std::string &tag, const std::string &scurrent_string, 
                  int &startpos, std::string &value);
   void FillStringsValue();
-  int FindSheets();
+  void FindSheets();
   std::string GetSheetsName(const int &number_sheet);
   std::string strings_file_name_, directory_sheets_, sheet_file_name_;
 };

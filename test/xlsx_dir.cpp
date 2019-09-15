@@ -16,19 +16,16 @@ XlsxDir::XlsxDir(std::string &input_name):ExcelFile() {
   strings_file_name_ = input_name + XlsxTag::kPathToStrings;
 };
 
-int XlsxDir::Parse() {
-  int res = 0;
+void XlsxDir::Parse() {
   FindSheets();
   FillStringsValue();
   for (auto it = sheets_.begin(); it != sheets_.end(); it++)
     it->ReadSheet();
-  return res;
 };
 
 std::string XlsxDir::GetSheetsName(const int &number_sheet) {
   int number_string = 0;
   int currentpos = 0;
-  int res = 0;
   std::string current_value = "";
   std::string current_string;
   std::ifstream file(sheet_file_name_);
@@ -45,11 +42,11 @@ std::string XlsxDir::GetSheetsName(const int &number_sheet) {
       currentpos = 0;
     }
     else {
-		res = FillTagValue(XlsxTag::kTagSheetName, current_string, currentpos, current_value); 
+	  FillTagValue(XlsxTag::kTagSheetName, current_string, currentpos, current_value); 
       return current_value;
     }
   }
-
+  return current_value;
 };
 
 void XlsxDir::FindTag(const std::string &tag, const std::string &current_string,
@@ -72,14 +69,14 @@ int XlsxDir::FillTagValue(const std::string &tag, const std::string &current_str
     FindTag(close_tag, current_string, startpos);
     if (!(startpos == std::string::npos)) {
       value = current_string.substr(pos1, startpos - pos1 - close_tag.length() - 2);
-      return 0;
+	  return 0;
     }
     else {
-      return -2;
+      throw "Not found close tag " + tag + ", file probably corrupted.";
     }
   }
   else {
-    return -1;
+    return 1; //not found tag, it's correct situation
   }
 };
 
@@ -100,8 +97,8 @@ void XlsxDir::FillStringsValue() {
 		res = FillTagValue(XlsxTag::kTagStringValueInternal, inside_tag, inside_pos, value);
         if (res==0)
           strings_value_.push_back(value);
-        //else
-          //break; //inside correct file we don't find this place never
+        else
+          throw "Incorrect sheet name structure, file probably corrupted.";
       }
       else {
         break;
@@ -110,7 +107,7 @@ void XlsxDir::FillStringsValue() {
   }
 };
 
-int XlsxDir::FindSheets() {
+void XlsxDir::FindSheets() {
   DIR *dir = opendir(directory_sheets_.c_str());
   std::string fname;
     if(dir) {
@@ -129,14 +126,15 @@ int XlsxDir::FindSheets() {
           current_sheet.strings_value_ = &strings_value_;
           sheets_.push_back(current_sheet);
         }
+		else {
+		  throw "Not found name sheet for file " + fname + ".";
+		}
       }
         }
     delete dir;
     delete ent;
     }
   if (sheets_.empty())
-    return 1;
-  else
-    return 0;
+    throw "Not found sheets!";
 };
   

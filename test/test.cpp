@@ -18,7 +18,6 @@
 
 int _tmain(int argc, char *argv[])
 {
-  int res;
   bool file_exist(false);
   CommandLineParameters param;
   std::string error_command;
@@ -28,7 +27,7 @@ int _tmain(int argc, char *argv[])
   if (param.mode_ != "dir") {
     std::cout << "Selected metod not supported in this version." << std::endl;
     std::cin.get();
-    return 0;
+    return 1;
   }
   std::string input_file_name = param.input_file_name_;
   file_exist = param.file_exist_;
@@ -50,26 +49,26 @@ int _tmain(int argc, char *argv[])
 //  Zip archive;
 //  archive.Extract(input_file_name,output_directory);
   Log logfile(log_file_name, true, param.log_mode_);
-  logfile.AddInLog("start logging;");
+  logfile.AddInLog("start logging;", 1);
   XlsxDir dir(output_directory);
-  logfile.AddInLog("create instance of XlsxDir;");
-  res = dir.Parse();
-  if (!(res == 0)) {
-    logfile.AddInLog("error reading file of name sheets;");
-    return res;
+  logfile.AddInLog("create instance of XlsxDir;", 1);
+  try {
+    dir.Parse();
   }
-  else
-  {
-    logfile.AddInLog("successful reading file of name sheets;");
+  catch (const char *msg) {
+	 logfile.AddInLog(msg, 0);
+    std::cout << msg << std::endl;	
+	std::cin.get();
+	return 1;
   }
   std::ofstream output_file(output_file_name);
   if (!(output_file.is_open())) {
-    logfile.AddInLog("error opening file of result;");
+    logfile.AddInLog("error opening file of result;", 0);
     return 1;
   }
   else
   {
-    logfile.AddInLog("successful opening file of result;");
+    logfile.AddInLog("successful opening file of result;", 1);
   }
   for(auto its = dir.sheets_.begin(); its != dir.sheets_.end(); its++) {
     output_file << "Sheet " << its->sheet_name_ << std::endl;
