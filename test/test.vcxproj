@@ -89,6 +89,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="unzip.h" />
     <ClInclude Include="xlsx_tag.h" />
+    <ClInclude Include="xlsx_to_dir.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="parse_parameters.cpp" />
@@ -99,6 +100,7 @@
     <ClCompile Include="test.cpp" />
     <ClCompile Include="unzip.cpp" />
     <ClCompile Include="xlsx_tag.cpp" />
+    <ClCompile Include="xlsx_to_dir.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

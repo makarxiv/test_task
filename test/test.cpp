@@ -10,53 +10,102 @@
 #include "sheet.h"
 #include "log.h"
 #include "parse_parameters.h"
+#include "xlsx_to_dir.h"
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <iterator>
 #include <cstdint>
+#include <windows.h>
+ 
+bool isDirectoryExists(const char *filename)
+{
+  DWORD dwFileAttributes = GetFileAttributes(filename);
+  if (dwFileAttributes == 0xFFFFFFFF)
+    return false;
+  return dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+}
+
+bool checkFileExist(std::string &input_file_name, const std::string &mode) {
+  bool file_exist(false);
+  if (mode == "xlsx") {
+    file_exist = std::ifstream(input_file_name) != NULL;
+    if (!file_exist)
+      std::cout << "File not found." << std::endl;
+    while (!file_exist) {
+      std::cout << "Enter file name: ";
+      std::cin >> input_file_name;
+      file_exist = std::ifstream(input_file_name) != NULL;
+      if (!file_exist)
+        std::cout << "File not found." << std::endl;
+    }
+  return file_exist;
+  }
+  if (mode == "dir") {
+	file_exist = isDirectoryExists(input_file_name.c_str());
+    if (!file_exist)
+      std::cout << "File not found." << std::endl;
+    while (!file_exist) {
+      std::cout << "Enter file name: ";
+      std::cin >> input_file_name;
+	  file_exist = isDirectoryExists(input_file_name.c_str());
+      if (!file_exist)
+        std::cout << "File not found." << std::endl;
+    }
+  return file_exist;
+  }
+  return file_exist;
+}
 
 int _tmain(int argc, char *argv[])
 {
-  bool file_exist(false);
   CommandLineParameters param;
   std::string error_command;
   error_command = param.ParseCommandLine(argc, argv);
   if (error_command != "")
     std::cout << error_command << std::endl;
-  if (param.mode_ != "dir") {
+  if ((param.mode_ != "dir")&&(param.mode_ != "xlsx")) {
     std::cout << "Selected metod not supported in this version." << std::endl;
     std::cin.get();
     return 1;
   }
   std::string input_file_name = param.input_file_name_;
-  file_exist = param.file_exist_;
-  while (!file_exist) {
-    std::cout << "Enter file name: ";
-    std::cin >> input_file_name;
-    file_exist = std::ifstream(input_file_name) != NULL;
-    if (!file_exist)
-      std::cout << "File not found." << std::endl;
+  if (!checkFileExist(input_file_name, param.mode_)) {
+    std::cout << "Incorrect input data." << std::endl;
+    std::cin.get();
+    return 1;
   }
-  std::string output_directory = input_file_name.substr(0, input_file_name.find(".xlsx"));
-  //std::string output_file_name_zip = output_directory + ".zip";
+  std::string output_directory = input_file_name;
+  if (param.mode_ == "xlsx")
+    output_directory = input_file_name.substr(0, input_file_name.find(".xlsx"));
+  std::string output_file_name_zip = output_directory + ".zip";
   std::string output_file_name = output_directory + ".txt";
   std::string log_file_name;
   if (param.log_file_name_ == "")
     log_file_name = output_directory + ".log";
   else
     log_file_name = param.log_file_name_;
-//  Zip archive;
-//  archive.Extract(input_file_name,output_directory);
   Log logfile(log_file_name, true, param.log_mode_);
   logfile.AddInLog("start logging;", 1);
+  if (param.mode_ == "xlsx") {
+    try {
+      XlsxToDir extracter;
+      extracter.Unpacking(output_file_name_zip, output_directory, input_file_name);
+    }
+    catch (std::string msg) {
+	  logfile.AddInLog(msg, 0);
+      std::cout << msg << std::endl;	
+	  std::cin.get();
+	  return 1;
+    }
+  }
   XlsxDir dir(output_directory);
   logfile.AddInLog("create instance of XlsxDir;", 1);
   try {
     dir.Parse();
   }
-  catch (const char *msg) {
-	 logfile.AddInLog(msg, 0);
+  catch (std::string msg) {
+	logfile.AddInLog(msg, 0);
     std::cout << msg << std::endl;	
 	std::cin.get();
 	return 1;

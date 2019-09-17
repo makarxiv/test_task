@@ -15,9 +15,6 @@ std::string CommandLineParameters::ParseCommandLine(const int &argc, char *argv[
       }
       if ((parameter == "path")&&((i + 1) < argc)) {
         input_file_name_ = std::string(argv[i+1]);
-        file_exist_ = std::ifstream(input_file_name_) != NULL;
-        if (!file_exist_)
-			error = error + "Incorrect parameter file name (parameter " + input_file_name_ + "). ";
         i = i + 2;
         continue;
       }

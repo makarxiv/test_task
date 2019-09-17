@@ -2,43 +2,11 @@
     КОНСОЛЬНОЕ ПРИЛОЖЕНИЕ. Обзор проекта test
 ========================================================================
 
-Это приложение test создано автоматически с помощью мастера 
-приложений.
-
-Здесь приведены краткие сведения о содержимом каждого из файлов, использованных 
-при создании приложения test.
-
-
-test.vcxproj
-    Основной файл проекта VC++, автоматически создаваемый с помощью мастера 
-    приложений.
-    Он содержит данные о версии языка Visual C++, использованной для создания 
-    файла, а также сведения о платформах, настройках и свойствах проекта, 
-    выбранных с помощью мастера приложений.
-
-test.vcxproj.filters
-    Это файл фильтров для проектов VC++, созданный с помощью мастера 
-    приложений. 
-    Он содержит сведения о сопоставлениях между файлами в вашем проекте и 
-    фильтрами. Эти сопоставления используются в среде IDE для группировки 
-    файлов с одинаковыми расширениями в одном узле (например файлы ".cpp" 
-    сопоставляются с фильтром "Исходные файлы").
-
-test.cpp
-    Это основной исходный файл приложения.
-
-/////////////////////////////////////////////////////////////////////////////
-Другие стандартные файлы:
-
-StdAfx.h, StdAfx.cpp
-    Эти файлы используются для построения файла предкомпилированного заголовка 
-    (PCH) с именем test.pch и файла предкомпилированных типов 
-    с именем StdAfx.obj.
-
-/////////////////////////////////////////////////////////////////////////////
-Общие замечания:
-
-С помощью комментариев «TODO:» в мастере приложений обозначаются фрагменты 
-исходного кода, которые необходимо дополнить или изменить.
-
-/////////////////////////////////////////////////////////////////////////////
+It is the application for output data .xlsx files in .txt files.
+User starting the application and input full path to a file. The application create new txt-file with content all sheets this file (full name txt-file equal full name xlsx-file).
+User can use console parameters:
+path %path_to_file% - if use this, the application try reading %path_to_file%. If this file not found, the application report this and offer input new path.
+mode %mode% - the application support two mode - xlsx(default) and dir. User need use dir-mode, if it have unpacked directory with data xlsx-file (in this case path is name directory).
+n - disable log.
+v - extended log.
+log %path_to_log% - if use this, the application try writing log to %path_to_log%. If not use this parameter, full name logfile equal full name xlsx-file.
